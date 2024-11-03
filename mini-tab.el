@@ -45,7 +45,7 @@
 Customize function only need argument `buffer', you can write any code to filter buffer.
 
 If you want buffer hide, return t, or return nil.")
-(defcustom my-fixed-buffers nil
+(defcustom my-fixed-buffers ni
   "A list of buffer names that should be fixed at the front.
 For example, '(\"*scratch*\" \"*Messages*\") would keep the scratch buffer and Messages buffer fixed at the front."
   :type '(repeat string))
@@ -60,3 +60,32 @@ For example, '(\"*Help*\" \"*Compile-Log*\") would exclude the Help buffer and C
 
 (defvar mini-tab-window nil)
 
+(defun mini-tab-get-buffer()
+  (get-buffer-create mini-tab-buffer-name))
+
+(defun mini-tab-create-window()
+  (split-window-vertically 1)
+
+  (setq mini-tab-window (selected-window))
+  (switch-to-buffer (mini-tab-get-buffer))
+  (other-window 1)
+)
+
+(defun mini-tab-turn-on()
+  (interactive)
+  (with-current-buffer (mini-tab-get-buffer)
+    (setq-local header-line-format nil)
+    (setq-local mode-line-format nil)
+    (setq-local cursor-type nil)
+    (setq-local window-min-height 1)
+    (setq-local truncate-lines t)
+    (setq-local window-size-fixed 'height))
+
+    (mini-tab-create-window)
+    ;; (mini-tab-update-list)
+)
+
+(defun mini-tab-turn-off()
+  (interactive)
+  (delete-window (get-buffer-window (mini-tab-get-buffer)))
+ )
